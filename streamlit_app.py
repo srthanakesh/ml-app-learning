@@ -48,8 +48,7 @@ with st.expander('Input features'):
 
 # Data preparation 
 # encode X
-encode = ['island','sex']
-df_penguins = pd.get_dummies(input_penguins, prefix=encode)
+df_penguins = pd.get_dummies(input_penguins, columns=['island','sex'])
 X = df_penguins[1:]
 input_row=df_penguins[:1]
 
