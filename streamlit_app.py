@@ -104,7 +104,6 @@ st.dataframe(df_pred,column_config={
     max_value=1
   )
 })
-df_pred
 penguins_species = np.array(['Adelie','Chinstrap','Gentoo'])
 st.success(str(penguins_species[pred[0]]))
 
