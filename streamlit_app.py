@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
 st.title('🖥️ Machine Learning App')
 
 st.info('This is app builds a machine learning model!')
@@ -36,9 +37,85 @@ with st.sidebar:
     'body_mass_g':body_mass_g,
     'gender ':gender  
   }
-  input_df = pd.DataFrame(data, index[0])
+  input_df = pd.DataFrame(data, index=[0])
   input_penguins = pd.concat([input_df, X],axis=0)
-input_penguins
+
+with st.expander('Input features'):
+  st.write('**Input features**')
+  input_df
+  st.write('**Combined penguins data**')
+  input_penguins
+
+# Data preparation 
+# encode X
+encode = ['island','sex']
+df_penguins = pd.get_dummies(input_penguins, prefix=encode)
+X = df_penguins[1:]
+input_row=df_penguins[:1]
+
+# encode Y
+target_mapper ={
+  'Adelie' :0,
+  'Chinstrap':1,
+  'Gentoo':2,  
+}
+def target_encode(val):
+  return target_mapper[val]
+
+y_new= y.apply(target_encode)
+y
+y_new
+
+with st.expander('Data preparation'):
+  st.write("**Encoded X**")
+  input_row
+  st.write ('**Encoded y**')
+  y_new
+
+# Model Training
+clf = RandomForestClassifier()
+clf.fit(X,y_new)
+
+## Apply model 
+pred = clf.predict(input_row)
+pred_probab = clf.predict_proba(input_row)
+df_pred = pd.DataFrame(pred_probab)
+df_pred.rename(columns={0:'Adelie',1:'Chinstrap',2:'Gentoo'})
+
+
+# Display predicted species
+st.subheader('Predicted Species')
+st.dataframe(df_pred,column_config={
+  'Adelie':st.column_config.ProgressColumn(
+    'Adelie',
+    format='%f',
+    width='medium',
+    min_value=0,
+    max_balue=1
+  ),'Chinstrap':st.column_config.ProgressColumn(
+    'Chinstrap',
+    format='%f',
+    width='medium',
+    min_value=0,
+    max_balue=1
+  ),
+  'Gentoo':st.column_config.ProgressColumn(
+    'Gentoo',
+    format='%f',
+    width='medium',
+    min_value=0,
+    max_balue=1
+  )
+})
+df_pred
+penguins_species = np.array(['Adelie','Chinstrap','Gentoo'])
+st.success(str(penguins_species[pred][0]))
+
+
+
+
+
+  
 
   
                         
