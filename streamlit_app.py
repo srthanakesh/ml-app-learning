@@ -35,7 +35,7 @@ with st.sidebar:
     'bill_depth_mm':bill_depth_mm,
     'flipper_length_mm':flipper_length_mm,
     'body_mass_g':body_mass_g,
-    'gender ':gender  
+    'sex':gender  
   }
   input_df = pd.DataFrame(data, index=[0])
   input_penguins = pd.concat([input_df, X],axis=0)
@@ -62,8 +62,7 @@ def target_encode(val):
   return target_mapper[val]
 
 y_new= y.apply(target_encode)
-y
-y_new
+
 
 with st.expander('Data preparation'):
   st.write("**Encoded X**")
@@ -78,8 +77,7 @@ clf.fit(X,y_new)
 ## Apply model 
 pred = clf.predict(input_row)
 pred_probab = clf.predict_proba(input_row)
-df_pred = pd.DataFrame(pred_probab)
-df_pred.rename(columns={0:'Adelie',1:'Chinstrap',2:'Gentoo'})
+df_pred = pd.DataFrame(pred_probab, columns=['Adelie','Chinstrap','Gentoo'])
 
 
 # Display predicted species
@@ -90,25 +88,25 @@ st.dataframe(df_pred,column_config={
     format='%f',
     width='medium',
     min_value=0,
-    max_balue=1
+    max_value=1
   ),'Chinstrap':st.column_config.ProgressColumn(
     'Chinstrap',
     format='%f',
     width='medium',
     min_value=0,
-    max_balue=1
+    max_value=1
   ),
   'Gentoo':st.column_config.ProgressColumn(
     'Gentoo',
     format='%f',
     width='medium',
     min_value=0,
-    max_balue=1
+    max_value=1
   )
 })
 df_pred
 penguins_species = np.array(['Adelie','Chinstrap','Gentoo'])
-st.success(str(penguins_species[pred][0]))
+st.success(str(penguins_species[pred[0]]))
 
 
 
